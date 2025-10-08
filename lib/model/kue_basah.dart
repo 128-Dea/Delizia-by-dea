@@ -22,7 +22,6 @@ class KueBasah extends Product {
 
   @override
   void tampilkanInfo() {
-    super.tampilkanInfo();
     print("Daya Tahan: $_dayaTahan");
     print("=================");
   }

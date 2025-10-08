@@ -22,7 +22,6 @@ class KueKering extends Product {
 
   @override
   void tampilkanInfo() {
-    super.tampilkanInfo();
     print("Rasa: $_rasa");
     print("=================");
   }

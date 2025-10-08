@@ -42,16 +42,6 @@ class Product {
     if (value > 0) _harga = value;
   }
 
-  // Format tampilan harga
-  String get hargaFormatted {
-    final formatter = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp',
-      decimalDigits: 2,
-    );
-    return formatter.format(_harga);
-  }
-
   set kategori(String value) {
     if (value.isNotEmpty) _kategori = value;
   }
@@ -66,6 +56,16 @@ class Product {
 
   set deskripsi(String value) {
     if (value.isNotEmpty) _deskripsi = value;
+  }
+
+  // Format tampilan harga
+  String get hargaFormatted {
+    final formatter = NumberFormat.currency(
+      locale: 'id_ID',
+      symbol: 'Rp',
+      decimalDigits: 2,
+    );
+    return formatter.format(_harga);
   }
 
   // Method tambahan untuk menampilkan info produk

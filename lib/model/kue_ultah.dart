@@ -29,7 +29,6 @@ class KueUltah extends Product {
 
   @override
   void tampilkanInfo() {
-    super.tampilkanInfo();
     print("Ukuran: $_ukuran");
     print("Ucapan: $_ucapan");
     print("=================");
