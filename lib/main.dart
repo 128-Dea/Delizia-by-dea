@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
                 ),
           home: const SplashScreen(),
 
-          // semua route dikelola di sini
+          // Semua route dikelola di sini
           routes: {
             "/login": (context) =>
                 LoginScreen(onLoginSuccess: () => _updateLoginStatus(true)),

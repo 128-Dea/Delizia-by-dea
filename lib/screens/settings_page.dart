@@ -18,6 +18,15 @@ class _SettingsPageState extends State<SettingsPage> {
   bool _darkMode = false;
   String _deviceInfo = "Belum diambil";
 
+  // Controller untuk form alamat
+  final TextEditingController _namaController = TextEditingController();
+  final TextEditingController _jalanController = TextEditingController();
+  final TextEditingController _desaController = TextEditingController();
+  final TextEditingController _kecamatanController = TextEditingController();
+  final TextEditingController _kabupatenController = TextEditingController();
+  final TextEditingController _provinsiController = TextEditingController();
+  final TextEditingController _kodeposController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -61,6 +70,87 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  void _showEditAlamatDialog() {
+    final alamat = AlamatStore().alamat;
+    if (alamat != null) {
+      _namaController.text = alamat.nama;
+      _jalanController.text = alamat.jalan;
+      _desaController.text = alamat.desa;
+      _kecamatanController.text = alamat.kecamatan;
+      _kabupatenController.text = alamat.kabupaten;
+      _provinsiController.text = alamat.provinsi;
+      _kodeposController.text = alamat.kodepos;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Edit Alamat"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: _namaController,
+                  decoration: const InputDecoration(labelText: "Nama"),
+                ),
+                TextField(
+                  controller: _jalanController,
+                  decoration: const InputDecoration(labelText: "Jalan"),
+                ),
+                TextField(
+                  controller: _desaController,
+                  decoration: const InputDecoration(labelText: "Desa"),
+                ),
+                TextField(
+                  controller: _kecamatanController,
+                  decoration: const InputDecoration(labelText: "Kecamatan"),
+                ),
+                TextField(
+                  controller: _kabupatenController,
+                  decoration: const InputDecoration(labelText: "Kabupaten"),
+                ),
+                TextField(
+                  controller: _provinsiController,
+                  decoration: const InputDecoration(labelText: "Provinsi"),
+                ),
+                TextField(
+                  controller: _kodeposController,
+                  decoration: const InputDecoration(labelText: "Kode Pos"),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Batal"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                AlamatStore().alamat = Alamat(
+                  nama: _namaController.text,
+                  jalan: _jalanController.text,
+                  desa: _desaController.text,
+                  kecamatan: _kecamatanController.text,
+                  kabupaten: _kabupatenController.text,
+                  provinsi: _provinsiController.text,
+                  kodepos: _kodeposController.text,
+                );
+                setState(() {});
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(245, 222, 184, 140),
+              ),
+              child: const Text("Simpan"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ? AlamatStore().alamat.toString()
                   : "Lihat dan ubah informasi akun",
             ),
-            onTap: () async {
-              final result = await Navigator.pushNamed(context, '/edit_alamat');
-              if (result != null) setState(() {});
-            },
+            onTap: _showEditAlamatDialog,
           ),
           SwitchListTile(
             secondary: const Icon(Icons.notifications),

@@ -3,6 +3,8 @@ import 'home.dart';
 import 'keranjang_page.dart';
 import 'settings_page.dart';
 import 'theme_notifier.dart';
+import 'notification_page.dart';
+import 'trending_page.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String username;
@@ -23,6 +25,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late int _selectedIndex;
   final List<Map<String, dynamic>> cart = [];
+  Map<String, dynamic>? selectedDiscount;
 
   @override
   void initState() {
@@ -52,10 +55,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       HomePage(onAddToCart: addToCart, cart: cart),
-      const Center(child: Text("Tidak Ada Notifikasi")),
-      const Center(child: Text("Belum Ada Trending")),
-      KeranjangPage(cart: cart),
-      // Dikirim themeNotifier agar SettingsPage bisa ubah tema
+      const NotificationPage(),
+      TrendingPage(
+        onSelectDiscount: (discount) {
+          setState(() {
+            selectedDiscount = discount;
+          });
+        },
+      ),
+      KeranjangPage(cart: cart, selectedDiscount: selectedDiscount),
       SettingsPage(themeNotifier: widget.themeNotifier),
     ];
 

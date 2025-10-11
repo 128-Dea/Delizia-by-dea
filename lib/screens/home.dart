@@ -3,7 +3,6 @@ import 'package:flutter_application_1/screens/detail_kue_page.dart';
 import '../model/kue_kering.dart';
 import '../model/kue_basah.dart';
 import '../model/kue_ultah.dart';
-import 'tambah_produk_page.dart';
 
 class HomePage extends StatefulWidget {
   final Function(Map<String, dynamic>) onAddToCart;
@@ -43,7 +42,6 @@ class _HomePageState extends State<HomePage> {
     final all = _allKue();
 
     List<dynamic> filtered;
-
     if (query.isNotEmpty) {
       filtered = all.where((kue) {
         final nama = kue.nama.toString().toLowerCase();
@@ -54,7 +52,7 @@ class _HomePageState extends State<HomePage> {
         return nama.contains(query) || extra.contains(query);
       }).toList();
     } else {
-      filtered = all;
+      filtered = [];
     }
 
     if (_selectedSort == "Nama") {
@@ -66,13 +64,6 @@ class _HomePageState extends State<HomePage> {
     setState(() => _searchResults = filtered);
   }
 
-  String _getCategoryForItem(dynamic item) {
-    if (KueKering.daftarKueKering.contains(item)) return "Kue Kering";
-    if (KueBasah.daftarKueBasah.contains(item)) return "Kue Basah";
-    if (KueUltah.daftarKueUltah.contains(item)) return "Kue Ulang Tahun";
-    return "Umum";
-  }
-
   @override
   void initState() {
     super.initState();
@@ -81,6 +72,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 600;
+    final bannerHeight = isMobile ? 120.0 : 180.0;
+    final gridCount = isMobile ? 2 : 3;
+
     final semuaProduk = _allKue();
 
     final List<Map<String, dynamic>> kategori = [
@@ -88,163 +84,19 @@ class _HomePageState extends State<HomePage> {
         "nama": "Kue Kering",
         "icon": Icons.cookie,
         "warna": const Color.fromARGB(255, 158, 131, 121),
-        "page": Scaffold(
-          appBar: AppBar(
-            title: const Text("Kue Kering"),
-            backgroundColor: const Color.fromARGB(245, 222, 184, 140),
-          ),
-          body: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: KueKering.daftarKueKering.length,
-            itemBuilder: (context, index) {
-              final kue = KueKering.daftarKueKering[index];
-              return Card(
-                color: const Color.fromARGB(255, 233, 215, 194),
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: ListTile(
-                  leading: Image.asset(
-                    kue.gambar,
-                    width: 60,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(
-                    kue.nama,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    "Rasa: ${kue.rasa}\nHarga: Rp${kue.harga.toInt()}",
-                  ),
-                  isThreeLine: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DetailKuePage(
-                          kue: kue,
-                          onAddToCart: widget.onAddToCart,
-                          cart: widget.cart,
-                          semuaProduk: semuaProduk,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+        "data": KueKering.daftarKueKering,
       },
       {
         "nama": "Kue Basah",
         "icon": Icons.bakery_dining,
         "warna": const Color.fromARGB(255, 127, 165, 142),
-        "page": Scaffold(
-          appBar: AppBar(
-            title: const Text("Kue Basah"),
-            backgroundColor: const Color.fromARGB(245, 222, 184, 140),
-          ),
-          body: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: KueBasah.daftarKueBasah.length,
-            itemBuilder: (context, index) {
-              final kue = KueBasah.daftarKueBasah[index];
-              return Card(
-                color: const Color.fromARGB(255, 233, 215, 194),
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: ListTile(
-                  leading: Image.asset(
-                    kue.gambar,
-                    width: 60,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(
-                    kue.nama,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    "Daya Tahan: ${kue.dayaTahan} hari\nHarga: Rp${kue.harga.toInt()}",
-                  ),
-                  isThreeLine: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DetailKuePage(
-                          kue: kue,
-                          onAddToCart: widget.onAddToCart,
-                          cart: widget.cart,
-                          semuaProduk: semuaProduk,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+        "data": KueBasah.daftarKueBasah,
       },
       {
         "nama": "Kue Ulang Tahun",
         "icon": Icons.cake,
         "warna": const Color.fromARGB(255, 99, 134, 163),
-        "page": Scaffold(
-          appBar: AppBar(
-            title: const Text("Kue Ulang Tahun"),
-            backgroundColor: const Color.fromARGB(245, 222, 184, 140),
-          ),
-          body: ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: KueUltah.daftarKueUltah.length,
-            itemBuilder: (context, index) {
-              final kue = KueUltah.daftarKueUltah[index];
-              return Card(
-                color: const Color.fromARGB(255, 233, 215, 194),
-                margin: const EdgeInsets.only(bottom: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 4,
-                child: ListTile(
-                  leading: Image.asset(
-                    kue.gambar,
-                    width: 60,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(
-                    kue.nama,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    "Ukuran: ${kue.ukuran}\nUcapan: ${kue.ucapan}\nHarga: Rp${kue.harga.toInt()}",
-                  ),
-                  isThreeLine: true,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => DetailKuePage(
-                          kue: kue,
-                          onAddToCart: widget.onAddToCart,
-                          cart: widget.cart,
-                          semuaProduk: semuaProduk,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ),
+        "data": KueUltah.daftarKueUltah,
       },
     ];
 
@@ -256,7 +108,7 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // ==== HEADER SAPAAN ====
+            // === Header Sapa ===
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(20),
@@ -277,15 +129,15 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text(
                           "${getGreeting()},",
-                          style: const TextStyle(
-                            fontSize: 14,
+                          style: TextStyle(
+                            fontSize: isMobile ? 13 : 15,
                             color: Colors.black54,
                           ),
                         ),
                         Text(
                           "Pelanggan $username 🍪",
-                          style: const TextStyle(
-                            fontSize: 18,
+                          style: TextStyle(
+                            fontSize: isMobile ? 16 : 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -296,9 +148,9 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // ==== SEARCHING & SORTING ====
+            // === Search & Sort ===
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -323,10 +175,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const Text(
                         "Urutkan berdasarkan:",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       DropdownButton<String>(
                         value: _selectedSort,
@@ -349,50 +198,257 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            // ==== GRID KATEGORI ====
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                children: List.generate(kategori.length, (index) {
-                  final item = kategori[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => item["page"]),
-                      );
-                    },
-                    child: Card(
-                      color: item["warna"],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 4,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(item["icon"], size: 50, color: Colors.white),
-                          const SizedBox(height: 12),
-                          Text(
-                            item["nama"],
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+            // === Jika ada pencarian ===
+            if (_searchQuery.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: _searchResults.isEmpty
+                    ? const Text(
+                        "Kue tidak ditemukan 😢",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: gridCount,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 0.8,
+                        ),
+                        itemCount: _searchResults.length,
+                        itemBuilder: (context, index) {
+                          final kue = _searchResults[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => DetailKuePage(
+                                    kue: kue,
+                                    onAddToCart: widget.onAddToCart,
+                                    cart: widget.cart,
+                                    semuaProduk: semuaProduk,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              color: const Color.fromARGB(255, 233, 215, 194),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 4,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Image.asset(
+                                      kue.gambar,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          kue.nama,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        Text("Rp${kue.harga.toInt()}"),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        },
+                      ),
+              )
+            else
+              // === Banner + Kategori ===
+              Column(
+                children: [
+                  // === Banner Promosi ===
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    height: bannerHeight,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      image: const DecorationImage(
+                        image: AssetImage("assets/images/promosi.jpeg"),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  );
-                }),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Surga Kue Lezat - Hanya di Delizia 🎉",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: isMobile ? 14 : 18,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.black54,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "Nikmati kelezatan kue homemade berkualitas 💖",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: isMobile ? 11 : 13,
+                                shadows: const [
+                                  Shadow(
+                                    color: Colors.black54,
+                                    offset: Offset(1, 1),
+                                    blurRadius: 2,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // === Grid Kategori ===
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: gridCount,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      children: List.generate(kategori.length, (index) {
+                        final item = kategori[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => Scaffold(
+                                  appBar: AppBar(
+                                    title: Text(item["nama"]),
+                                    backgroundColor: const Color.fromARGB(
+                                      245,
+                                      222,
+                                      184,
+                                      140,
+                                    ),
+                                  ),
+                                  body: ListView.builder(
+                                    padding: const EdgeInsets.all(16),
+                                    itemCount: (item["data"] as List).length,
+                                    itemBuilder: (context, i) {
+                                      final kue = (item["data"] as List)[i];
+                                      return Card(
+                                        color: const Color.fromARGB(
+                                          255,
+                                          233,
+                                          215,
+                                          194,
+                                        ),
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 8,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        elevation: 4,
+                                        child: ListTile(
+                                          leading: Image.asset(
+                                            kue.gambar,
+                                            width: 60,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          title: Text(
+                                            kue.nama,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            "Harga: Rp${kue.harga.toInt()}",
+                                          ),
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => DetailKuePage(
+                                                  kue: kue,
+                                                  onAddToCart:
+                                                      widget.onAddToCart,
+                                                  cart: widget.cart,
+                                                  semuaProduk: semuaProduk,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            color: item["warna"],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 4,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  item["icon"],
+                                  size: isMobile ? 36 : 50,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  item["nama"],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: isMobile ? 13 : 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ],
               ),
-            ),
           ],
         ),
       ),

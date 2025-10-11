@@ -6,7 +6,8 @@ import 'package:badges/badges.dart' as badges;
 
 class KeranjangPage extends StatefulWidget {
   final List<Map<String, dynamic>> cart;
-  const KeranjangPage({super.key, required this.cart});
+  final Map<String, dynamic>? selectedDiscount;
+  const KeranjangPage({super.key, required this.cart, this.selectedDiscount});
 
   @override
   State<KeranjangPage> createState() => _KeranjangPageState();
@@ -65,8 +66,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>
-            CheckoutPage(items: selectedItems, total: _selectedTotal),
+        builder: (context) => CheckoutPage(
+          items: selectedItems,
+          total: _selectedTotal,
+          selectedDiscount: widget.selectedDiscount,
+        ),
       ),
     );
   }
@@ -221,8 +225,14 @@ class _KeranjangPageState extends State<KeranjangPage> {
 class CheckoutPage extends StatefulWidget {
   final List<Map<String, dynamic>> items;
   final int total;
+  final Map<String, dynamic>? selectedDiscount;
 
-  const CheckoutPage({super.key, required this.items, required this.total});
+  const CheckoutPage({
+    super.key,
+    required this.items,
+    required this.total,
+    this.selectedDiscount,
+  });
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -259,7 +269,26 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   int get _totalAkhir {
     final ongkir = _kurir != null ? ongkirKurir[_kurir!] ?? 0 : 0;
-    return (widget.total - _diskon + ongkir).toInt();
+    double totalDiskon = 0;
+
+    if (widget.selectedDiscount != null) {
+      final d = widget.selectedDiscount!;
+      final discountValue = (d["value"] as num?)?.toDouble() ?? 0.0;
+
+      if (d["type"] == "percent") {
+        totalDiskon = widget.total.toDouble() * discountValue;
+      } else {
+        totalDiskon = discountValue;
+      }
+    }
+
+    return (widget.total.toDouble() - totalDiskon + ongkir).toInt();
+  }
+
+  bool get _isFormComplete {
+    return AlamatStore().alamat != null &&
+        _metodePembayaran != null &&
+        _kurir != null;
   }
 
   Icon _iconPembayaran(String metode) {
@@ -273,12 +302,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
       default:
         return const Icon(Icons.payment);
     }
-  }
-
-  bool get _isFormComplete {
-    return AlamatStore().alamat != null &&
-        _metodePembayaran != null &&
-        _kurir != null;
   }
 
   @override
