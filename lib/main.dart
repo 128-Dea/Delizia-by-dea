@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'services/preferences_service.dart';
+import 'services/liked_service.dart';
+
+import 'model/kue_kering.dart';
+import 'model/kue_basah.dart';
+import 'model/kue_ultah.dart';
 
 import 'screens/splash_screen.dart';
 import 'screens/LoginScreen.dart';
@@ -12,8 +17,13 @@ import 'screens/theme_notifier.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  final daftarProduct = [
+    ...KueKering.daftarKueKering,
+    ...KueBasah.daftarKueBasah,
+    ...KueUltah.daftarKueUltah,
+  ];
+  await LikedService.loadLikes(daftarProduct);
 
-  // Ambil preferensi sebelum runApp
   final isLoggedIn = await PreferencesService.getLoggedIn();
   final themeNotifier = ThemeNotifier(await PreferencesService.getDarkMode());
 
@@ -71,7 +81,7 @@ class _MyAppState extends State<MyApp> {
                 ),
           home: const SplashScreen(),
 
-          // Semua route dikelola di sini
+          //
           routes: {
             "/login": (context) =>
                 LoginScreen(onLoginSuccess: () => _updateLoginStatus(true)),

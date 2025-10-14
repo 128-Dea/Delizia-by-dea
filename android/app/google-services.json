@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "976980168725",
+    "project_id": "delizia-36de6",
+    "storage_bucket": "delizia-36de6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:976980168725:android:cfa56fb54055f57aef7e1c",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "976980168725-r98pgf7ee6ea8fiqtkj5mgdbhec3g6sd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZdo8FNPkZafu87aE8VxNd1xM5sn3HwZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "976980168725-r98pgf7ee6ea8fiqtkj5mgdbhec3g6sd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/screens/chat_page.dart';
 import 'package:intl/intl.dart';
 import 'package:easy_stars/easy_stars.dart';
 import 'package:getwidget/getwidget.dart';
@@ -13,6 +14,7 @@ import '../model/kue_ultah.dart';
 import '../model/ulasan_model.dart';
 import '../services/review_service.dart';
 import 'keranjang_page.dart';
+import '../services/liked_service.dart';
 
 class DetailKuePage extends StatefulWidget {
   final Product kue;
@@ -473,10 +475,6 @@ class _DetailKuePageState extends State<DetailKuePage>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      "Lainnya",
-                      style: TextStyle(color: brown.withOpacity(0.6)),
-                    ),
                   ],
                 ),
               ),
@@ -666,12 +664,49 @@ class _DetailKuePageState extends State<DetailKuePage>
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(
+                      // Validasi dulu biar gak lupa pilih varian
+                      if (widget.kue.kategori == "Kue Ultah" &&
+                          (selectedUkuran == null || selectedTopping == null)) {
+                        GFToast.showToast(
+                          "Pilih ukuran dan topping terlebih dahulu!",
+                          context,
+                          backgroundColor: Colors.red.shade300,
+                          toastPosition: GFToastPosition.BOTTOM,
+                        );
+                        return;
+                      }
+
+                      if (widget.kue.kategori == "Kue Kering" &&
+                          selectedBerat == null) {
+                        GFToast.showToast(
+                          "Pilih berat bersih terlebih dahulu!",
+                          context,
+                          backgroundColor: Colors.red.shade300,
+                          toastPosition: GFToastPosition.BOTTOM,
+                        );
+                        return;
+                      }
+
+                      // Arahkan langsung ke halaman checkout (tanpa masuk keranjang)
+                      Navigator.push(
                         context,
-                        '/checkout',
-                        arguments: [widget.kue],
+                        MaterialPageRoute(
+                          builder: (_) => CheckoutPage(
+                            items: [
+                              {
+                                "kue": widget.kue,
+                                "quantity": quantity,
+                                "ukuran": selectedUkuran,
+                                "topping": selectedTopping,
+                                "berat": selectedBerat,
+                              },
+                            ],
+                            total: (widget.kue.harga * quantity).toInt(),
+                          ),
+                        ),
                       );
                     },
+
                     icon: const Icon(Icons.shopping_bag),
                     label: const Text("Beli Sekarang"),
                     style: ElevatedButton.styleFrom(
@@ -684,9 +719,11 @@ class _DetailKuePageState extends State<DetailKuePage>
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Membuka chat penjual..."),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              const ChatPage(namaPenjual: "Delizia Cake Shop"),
                         ),
                       );
                     },
@@ -707,35 +744,48 @@ class _DetailKuePageState extends State<DetailKuePage>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Tombol Suka
                 IconButton(
                   icon: Icon(
-                    isLiked ? Icons.favorite : Icons.favorite_border,
+                    LikedService.isLiked(kue)
+                        ? Icons.favorite
+                        : Icons.favorite_border,
                     color: Colors.red,
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     setState(() {
-                      isLiked = !isLiked;
+                      LikedService.toggleLike(kue);
                     });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          LikedService.isLiked(kue)
+                              ? "${kue.nama} ditambahkan ke daftar suka ❤️"
+                              : "${kue.nama} dihapus dari daftar suka 💔",
+                        ),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
                   },
                 ),
+
                 IconButton(
                   icon: const FaIcon(
-                    FontAwesomeIcons.whatsapp, // WHATSUPP
+                    FontAwesomeIcons.whatsapp,
                     color: Colors.green,
                   ),
                   onPressed: () {},
                 ),
                 IconButton(
                   icon: const FaIcon(
-                    FontAwesomeIcons.instagram, // INSTAGRAM
+                    FontAwesomeIcons.instagram,
                     color: Colors.purple,
                   ),
                   onPressed: () {},
                 ),
                 IconButton(
                   icon: const FaIcon(
-                    FontAwesomeIcons.facebook, // FACEBOOK
+                    FontAwesomeIcons.facebook,
                     color: Colors.blue,
                   ),
                   onPressed: () {},

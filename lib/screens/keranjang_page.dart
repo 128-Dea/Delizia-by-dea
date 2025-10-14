@@ -286,9 +286,17 @@ class _CheckoutPageState extends State<CheckoutPage> {
   }
 
   bool get _isFormComplete {
-    return AlamatStore().alamat != null &&
-        _metodePembayaran != null &&
-        _kurir != null;
+    final alamat = AlamatStore().alamat;
+    final alamatLengkap =
+        alamat != null &&
+        alamat.nama.isNotEmpty &&
+        alamat.jalan.isNotEmpty &&
+        alamat.kecamatan.isNotEmpty &&
+        alamat.kabupaten.isNotEmpty &&
+        alamat.provinsi.isNotEmpty &&
+        alamat.kodepos.isNotEmpty;
+
+    return alamatLengkap && _metodePembayaran != null && _kurir != null;
   }
 
   Icon _iconPembayaran(String metode) {

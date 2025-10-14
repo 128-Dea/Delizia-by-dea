@@ -61,6 +61,7 @@ dev_dependencies:
   device_info_plus: ^10.1.0
   badges: ^3.1.2
   getwidget: ^7.0.0
+  google_sign_in: ^6.2.1
 
 
 # For information on the generic Dart part of this file, see the
@@ -111,6 +112,7 @@ flutter:
     - assets/images/cloud coklat.jpeg
     - assets/images/brownis.jpeg
     - assets/images/cup cake.jpeg
+    - assets/images/Tiramisu cake.jpeg
 
 flutter_native_splash:
   color: "#ffffff"

@@ -1,1 +1,39 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"delizia-36de6","appId":"1:976980168725:android:cfa56fb54055f57aef7e1c","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"delizia-36de6","configurations":{"android":"1:976980168725:android:cfa56fb54055f57aef7e1c","ios":"1:976980168725:ios:ac7778aad5290a81ef7e1c","macos":"1:976980168725:ios:ac7778aad5290a81ef7e1c","web":"1:976980168725:web:4522877df78e08d1ef7e1c","windows":"1:976980168725:web:09cdf17ca6173a21ef7e1c"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "delizia-36de6",
+          "appId": "1:976980168725:android:cfa56fb54055f57aef7e1c",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "delizia-36de6",
+          "configurations": {
+            "android": "1:976980168725:android:cfa56fb54055f57aef7e1c",
+            "ios": "1:976980168725:ios:ac7778aad5290a81ef7e1c",
+            "macos": "1:976980168725:ios:ac7778aad5290a81ef7e1c",
+            "web": "1:976980168725:web:4522877df78e08d1ef7e1c",
+            "windows": "1:976980168725:web:09cdf17ca6173a21ef7e1c"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

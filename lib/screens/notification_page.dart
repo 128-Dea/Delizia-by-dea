@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'chat_page.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -68,18 +69,10 @@ class _NotificationPageState extends State<NotificationPage> {
       "icon": Icons.system_update_alt_outlined,
       "color": Colors.indigo,
     },
-    {
-      "title": "Update Aplikasi 🛠️",
-      "message": "Versi terbaru aplikasi Delizia sudah tersedia di Play Store.",
-      "time": DateTime.now().subtract(const Duration(days: 8)),
-      "icon": Icons.system_update_alt_outlined,
-      "color": Colors.indigo,
-    },
   ];
 
-  bool _selectionMode = false; // Menandakan apakah sedang memilih
-  final Set<int> _selectedIndexes =
-      {}; // Menyimpan index notifikasi yang dipilih
+  bool _selectionMode = false;
+  final Set<int> _selectedIndexes = {};
 
   // Format waktu
   String _formatTime(DateTime date) {
@@ -136,19 +129,30 @@ class _NotificationPageState extends State<NotificationPage> {
         backgroundColor: const Color.fromARGB(245, 222, 184, 140),
         centerTitle: true,
         actions: [
+          // tombol hapus kalau sedang mode pilih
           if (_selectionMode)
             IconButton(
               icon: const Icon(Icons.delete),
-              onPressed: _selectedIndexes.isEmpty
-                  ? null
-                  : _deleteSelected, // hapus
+              onPressed: _selectedIndexes.isEmpty ? null : _deleteSelected,
             )
-          else if (notifications.isNotEmpty)
+          // tombol edit kalau belum mode pilih
+          else if (notifications.isNotEmpty) ...[
+            IconButton(
+              icon: const Icon(Icons.chat_bubble_outline),
+              tooltip: "Buka Riwayat Chat",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ChatPage()),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.edit),
               tooltip: "Pilih notifikasi untuk dihapus",
               onPressed: _toggleSelectionMode,
             ),
+          ],
         ],
         leading: _selectionMode
             ? IconButton(
