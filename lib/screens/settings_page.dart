@@ -155,7 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _showLikedProducts() async {
-    await _loadLikedProducts(); // ✅ supaya update terbaru selalu muncul
+    await _loadLikedProducts();
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

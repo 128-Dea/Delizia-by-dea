@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'detail_kue_page.dart'; // ✅ pastikan path sesuai struktur project kamu
 
 class TrendingPage extends StatefulWidget {
   final Function(Map<String, dynamic>) onSelectDiscount;
@@ -57,21 +58,32 @@ class _TrendingPageState extends State<TrendingPage> {
       "nama": "Red Velvet",
       "harga": 150000,
       "gambar": "assets/images/Red Velvet Cake.jpeg",
+      "deskripsi": "Kue lembut berlapis krim keju khas Red Velvet.",
+      "jenis": "Ulang Tahun",
     },
     {
       "nama": "Kue Putu Ayu",
       "harga": 3000,
       "gambar": "assets/images/putu ayu.jpeg",
+      "deskripsi":
+          "Kue tradisional lembut dengan aroma pandan dan kelapa parut.",
+      "jenis": "Basah",
     },
     {
       "nama": "Nastar Premium",
       "harga": 75000,
       "gambar": "assets/images/nastar.jpeg",
+      "deskripsi":
+          "Kue kering isi nanas premium dengan rasa gurih dan manis seimbang.",
+      "jenis": "Kering",
     },
     {
       "nama": "Black Forest",
       "harga": 150000,
       "gambar": "assets/images/black forest.jpeg",
+      "deskripsi":
+          "Kue cokelat klasik dengan krim dan taburan ceri di atasnya.",
+      "jenis": "Ulang Tahun",
     },
   ];
 
@@ -99,8 +111,9 @@ class _TrendingPageState extends State<TrendingPage> {
 
           Column(
             children: discounts.map((item) {
+              final Color color = item["color"] as Color;
               return Card(
-                color: item["color"].withOpacity(0.15),
+                color: color.withOpacity(0.15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -108,7 +121,7 @@ class _TrendingPageState extends State<TrendingPage> {
                 margin: const EdgeInsets.symmetric(vertical: 6),
                 child: ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: item["color"].withOpacity(0.4),
+                    backgroundColor: color.withOpacity(0.4),
                     child: const Icon(Icons.local_offer, color: Colors.white),
                   ),
                   title: Text(
@@ -121,7 +134,7 @@ class _TrendingPageState extends State<TrendingPage> {
                   subtitle: Text(item["description"]),
                   trailing: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: item["color"],
+                      backgroundColor: color,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -132,7 +145,7 @@ class _TrendingPageState extends State<TrendingPage> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text("Diskon diterapkan: ${item["title"]}"),
-                          backgroundColor: item["color"],
+                          backgroundColor: color,
                         ),
                       );
                     },
@@ -160,7 +173,7 @@ class _TrendingPageState extends State<TrendingPage> {
               crossAxisCount: 2,
               mainAxisSpacing: 12,
               crossAxisSpacing: 12,
-              childAspectRatio: 0.8, // ✅ Biar kotak lebih pendek & rapi
+              childAspectRatio: 0.8,
             ),
             itemBuilder: (context, index) {
               final cake = trendingCakes[index];
@@ -171,7 +184,15 @@ class _TrendingPageState extends State<TrendingPage> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
-                  onTap: () {}, // nanti bisa diarahkan ke detail
+                  onTap: () {
+                    // ✅ Cukup munculin pesan dulu kalau diklik
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("${cake['nama']} diklik!"),
+                        backgroundColor: Colors.orangeAccent,
+                      ),
+                    );
+                  },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -181,7 +202,7 @@ class _TrendingPageState extends State<TrendingPage> {
                         ),
                         child: Image.asset(
                           cake["gambar"],
-                          height: 530, // ✅ gambar lebih kecil
+                          height: 150,
                           width: double.infinity,
                           fit: BoxFit.cover,
                         ),
@@ -200,7 +221,7 @@ class _TrendingPageState extends State<TrendingPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              "Rp${cake["harga"].toString()}",
+                              "Rp${cake["harga"]}",
                               style: const TextStyle(
                                 color: Colors.brown,
                                 fontWeight: FontWeight.w600,
