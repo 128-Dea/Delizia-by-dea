@@ -6,7 +6,9 @@ import '../model/alamat_store.dart';
 import '../services/preferences_service.dart';
 import 'theme_notifier.dart';
 import '../services/liked_service.dart';
-import '../model/product.dart';
+import '../services/order_history_service.dart';
+import '../model/order_history.dart';
+import 'order_history_page.dart';
 
 class SettingsPage extends StatefulWidget {
   final ThemeNotifier themeNotifier;
@@ -124,6 +126,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  // PROFIL DAN SUB-MENU
+
   void _showProfileOptions() {
     showDialog(
       context: context,
@@ -141,6 +145,17 @@ class _SettingsPageState extends State<SettingsPage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.history, color: Colors.blue),
+              title: const Text("Riwayat Pesanan"),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const OrderHistoryPage()),
+                );
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.home, color: Colors.brown),
               title: const Text("Alamat"),
               onTap: () {
@@ -153,6 +168,8 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+  // PRODUK DISUKAI
 
   void _showLikedProducts() async {
     await _loadLikedProducts();
@@ -185,6 +202,8 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
     );
   }
+
+  // EDIT ALAMAT
 
   void _showEditAlamatDialog() {
     final alamat = AlamatStore().alamat;
@@ -267,6 +286,8 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  // BUILD
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -279,7 +300,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             leading: const Icon(Icons.person),
             title: const Text("Profil"),
-            subtitle: const Text("Lihat dan ubah informasi akun"),
+            subtitle: const Text("Lihat alamat, produk disukai..."),
             onTap: _showProfileOptions,
           ),
           SwitchListTile(

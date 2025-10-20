@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ChatPage extends StatefulWidget {
-  final String? namaPenjual; // kalau dari DetailKuePage, otomatis isi nama toko
+  final String? namaPenjual;
 
   const ChatPage({super.key, this.namaPenjual});
 
@@ -11,7 +11,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  // contoh data riwayat chat
+  // data riwayat chat
   List<Map<String, dynamic>> chatList = [
     {
       "nama": "Raraaa",
@@ -59,7 +59,7 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
 
-    // jika datang dari DetailKuePage langsung ke chat penjual
+    // DetailKuePage langsung ke chat penjual
     if (widget.namaPenjual != null) {
       Future.microtask(() {
         final toko = widget.namaPenjual!;
@@ -68,7 +68,6 @@ class _ChatPageState extends State<ChatPage> {
           orElse: () => {},
         );
 
-        // buat data chat baru kalau belum ada
         final chatData = existing.isNotEmpty
             ? existing
             : {
@@ -100,7 +99,7 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    // tampilkan daftar chat kalau tidak dari DetailKuePage
+    // chat kalau tidak dari DetailKuePage
     return Scaffold(
       appBar: AppBar(
         title: const Text("Riwayat Chat"),
@@ -174,7 +173,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     });
     _msgController.clear();
 
-    // Auto-reply penjual (biar terasa interaktif)
     Future.delayed(const Duration(seconds: 1), () {
       final replies = [
         "Baik kak, kami siap bantu ya 😊",

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
 import 'services/preferences_service.dart';
 import 'services/liked_service.dart';
+import 'services/order_history_service.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'model/kue_kering.dart';
 import 'model/kue_basah.dart';
@@ -17,6 +20,8 @@ import 'screens/theme_notifier.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await initializeDateFormatting('id_ID', null);
+
   final daftarProduct = [
     ...KueKering.daftarKueKering,
     ...KueBasah.daftarKueBasah,
@@ -24,8 +29,13 @@ void main() async {
   ];
   await LikedService.loadLikes(daftarProduct);
 
+  // status login & tema
   final isLoggedIn = await PreferencesService.getLoggedIn();
   final themeNotifier = ThemeNotifier(await PreferencesService.getDarkMode());
+
+  // riwayat pesanan dari SharedPreferences
+  await OrderHistoryService.loadPesanan();
+  print("✅ Riwayat pesanan berhasil dimuat dari SharedPreferences!");
 
   runApp(MyApp(themeNotifier: themeNotifier, isLoggedIn: isLoggedIn));
 }
@@ -81,7 +91,6 @@ class _MyAppState extends State<MyApp> {
                 ),
           home: const SplashScreen(),
 
-          //
           routes: {
             "/login": (context) =>
                 LoginScreen(onLoginSuccess: () => _updateLoginStatus(true)),

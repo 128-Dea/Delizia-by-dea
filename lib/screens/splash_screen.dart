@@ -12,7 +12,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // kasih delay biar splash sempat kelihatan
+    // delay biar splash sempat kelihatan
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacementNamed(context, "/login");
     });
@@ -26,8 +26,8 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(height: 10), // kasih jarak biar logo agak ke atas
-            // gambar dari assets
+            const SizedBox(height: 10),
+
             Image.asset(
               "assets/images/logo.png",
               width: 400,

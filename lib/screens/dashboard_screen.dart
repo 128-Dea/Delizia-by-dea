@@ -33,7 +33,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     _selectedIndex = widget.initialIndex;
   }
 
-  // Fungsi tambah ke keranjang
+  // Tambah produk ke keranjang
   void addToCart(Map<String, dynamic> item) {
     setState(() {
       int index = cart.indexWhere((element) => element["kue"] == item["kue"]);
@@ -45,6 +45,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
+  // Hitung total keranjang + diskon
+  int computeTotal() {
+    double total = 0;
+    for (var item in cart) {
+      final kue = item["kue"];
+      final harga = (kue != null)
+          ? (kue.harga ?? 0)
+          : (item["price"] ?? item["harga"] ?? 0);
+      final quantity = item["quantity"] ?? 1;
+      total += harga * quantity;
+    }
+
+    // Terapkan diskon jika ada
+    if (selectedDiscount != null) {
+      final d = selectedDiscount!;
+      final discountVal = (d['value'] as num?)?.toDouble() ?? 0.0;
+      if (d['type'] == 'percent') {
+        total = total * (1 - discountVal);
+      } else {
+        total = total - discountVal;
+      }
+    }
+
+    return total.round().clamp(0, 1 << 63 - 1);
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -54,8 +80,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
+      // Halaman Home
       HomePage(onAddToCart: addToCart, cart: cart),
+
+      // Halaman Notifikasi
       const NotificationPage(),
+
+      // Halaman Trending (pilih diskon)
       TrendingPage(
         onSelectDiscount: (discount) {
           setState(() {
@@ -63,7 +94,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           });
         },
       ),
+
+      // Halaman Keranjang
       KeranjangPage(cart: cart, selectedDiscount: selectedDiscount),
+
+      // Halaman Settings
       SettingsPage(themeNotifier: widget.themeNotifier),
     ];
 

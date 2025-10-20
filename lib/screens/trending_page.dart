@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'detail_kue_page.dart'; // ✅ pastikan path sesuai struktur project kamu
+import 'detail_kue_page.dart';
 
 class TrendingPage extends StatefulWidget {
   final Function(Map<String, dynamic>) onSelectDiscount;
@@ -102,7 +102,7 @@ class _TrendingPageState extends State<TrendingPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // 🎁 Bagian Diskon
+          //  Bagian Diskon
           const Text(
             "Penawaran Spesial Hari Ini 🎉",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -158,7 +158,7 @@ class _TrendingPageState extends State<TrendingPage> {
 
           const SizedBox(height: 25),
 
-          // 🍰 Bagian Kue Trending
+          // Bagian Kue Trending
           const Text(
             "Trending Kue Paling Laris 🍰",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -185,7 +185,6 @@ class _TrendingPageState extends State<TrendingPage> {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
-                    // ✅ Cukup munculin pesan dulu kalau diklik
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text("${cake['nama']} diklik!"),

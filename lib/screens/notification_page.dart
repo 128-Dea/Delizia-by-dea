@@ -10,7 +10,6 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
-  // 🔥 Data notifikasi contoh (bisa nanti diganti dari Firestore / API)
   List<Map<String, dynamic>> notifications = [
     {
       "title": "Pesanan Diterima 🎉",

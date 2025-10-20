@@ -47,7 +47,6 @@ class _DetailKuePageState extends State<DetailKuePage>
   String? selectedTopping;
   String? selectedBerat;
 
-  // controller untuk animasi
   late final AnimationController _animController;
 
   @override
@@ -65,6 +64,19 @@ class _DetailKuePageState extends State<DetailKuePage>
     _nameController.dispose();
     _commentController.dispose();
     super.dispose();
+  }
+
+  int _hitungTotal(List<Map<String, dynamic>> cart) {
+    double total = 0;
+    for (var item in cart) {
+      final kue = item["kue"];
+      final harga = (kue != null)
+          ? (kue.harga ?? 0)
+          : (item["price"] ?? item["harga"] ?? 0);
+      final quantity = item["quantity"] ?? 1;
+      total += harga * quantity;
+    }
+    return total.round();
   }
 
   Future<void> addReview() async {
@@ -103,8 +115,8 @@ class _DetailKuePageState extends State<DetailKuePage>
     }
   }
 
+  //harus
   void addToCart() {
-    //harus
     if (widget.kue.kategori == "Kue Ultah" &&
         (selectedUkuran == null || selectedTopping == null)) {
       GFToast.showToast(
@@ -144,7 +156,7 @@ class _DetailKuePageState extends State<DetailKuePage>
     setState(() {});
   }
 
-  /// Ambil 5 produk random
+  // produk random
   List<Product> getRelatedProducts({int take = 9}) {
     final random = Random();
     final others = widget.semuaProduk
@@ -216,10 +228,60 @@ class _DetailKuePageState extends State<DetailKuePage>
                 child: IconButton(
                   icon: const Icon(Icons.shopping_cart),
                   onPressed: () {
+                    // Hitung total harga sebelum ke halaman checkout
+                    int hitungTotal() {
+                      int total = 0;
+
+                      for (final item in widget.cart) {
+                        final rawQty = item['quantity'];
+                        int qty;
+                        if (rawQty == null) {
+                          qty = 1;
+                        } else if (rawQty is int) {
+                          qty = rawQty;
+                        } else if (rawQty is double) {
+                          qty = rawQty.toInt();
+                        } else {
+                          qty = int.tryParse(rawQty.toString()) ?? 1;
+                        }
+
+                        dynamic rawPrice;
+                        if (item.containsKey('kue') && item['kue'] != null) {
+                          final prod = item['kue'];
+                          try {
+                            rawPrice = prod.harga ?? prod.price ?? prod.p;
+                          } catch (_) {
+                            rawPrice = null;
+                          }
+                        }
+                        rawPrice ??=
+                            item['price'] ?? item['harga'] ?? item['priceRp'];
+
+                        double harga;
+                        if (rawPrice == null) {
+                          harga = 0.0;
+                        } else if (rawPrice is num) {
+                          harga = rawPrice.toDouble();
+                        } else {
+                          harga = double.tryParse(rawPrice.toString()) ?? 0.0;
+                        }
+
+                        // --- accumulate safely, hasil dibulatkan ke int ---
+                        total += (harga * qty).round();
+                      }
+
+                      if (total < 0) total = 0;
+                      return total;
+                    }
+
+                    // Navigasi ke halaman checkout
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => KeranjangPage(cart: widget.cart),
+                        builder: (context) => KeranjangPage(
+                          cart: widget.cart,
+                          selectedDiscount: null,
+                        ),
                       ),
                     );
                   },
@@ -228,6 +290,7 @@ class _DetailKuePageState extends State<DetailKuePage>
             ),
           ],
         ),
+
         body: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Column(
@@ -240,10 +303,9 @@ class _DetailKuePageState extends State<DetailKuePage>
                     return Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // image column
                         Expanded(flex: 5, child: _buildImageCard(kue)),
                         const SizedBox(width: 16),
-                        // info column
+
                         Expanded(
                           flex: 5,
                           child: _buildInfoCard(kue, brown, accent),
@@ -462,7 +524,7 @@ class _DetailKuePageState extends State<DetailKuePage>
 
               const SizedBox(height: 20),
 
-              // ====== REKOMENDASI
+              // ====== REKOMENDASI =========
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4),
                 child: Row(
@@ -622,7 +684,7 @@ class _DetailKuePageState extends State<DetailKuePage>
               const SizedBox(height: 16),
             ],
 
-            // Tambah ke Keranjang ========
+            // ======= Tambah ke Keranjang ========
             Row(
               children: [
                 IconButton(
@@ -664,7 +726,6 @@ class _DetailKuePageState extends State<DetailKuePage>
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      // Validasi dulu biar gak lupa pilih varian
                       if (widget.kue.kategori == "Kue Ultah" &&
                           (selectedUkuran == null || selectedTopping == null)) {
                         GFToast.showToast(
@@ -687,12 +748,12 @@ class _DetailKuePageState extends State<DetailKuePage>
                         return;
                       }
 
-                      // Arahkan langsung ke halaman checkout (tanpa masuk keranjang)
+                      // langsung ke halaman checkout
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => CheckoutPage(
-                            items: [
+                          builder: (_) => KeranjangPage(
+                            cart: [
                               {
                                 "kue": widget.kue,
                                 "quantity": quantity,
@@ -701,7 +762,7 @@ class _DetailKuePageState extends State<DetailKuePage>
                                 "berat": selectedBerat,
                               },
                             ],
-                            total: (widget.kue.harga * quantity).toInt(),
+                            selectedDiscount: null,
                           ),
                         ),
                       );
@@ -740,7 +801,7 @@ class _DetailKuePageState extends State<DetailKuePage>
 
             const SizedBox(height: 12),
 
-            // Favorit & Share ========
+            //======= Favorit & Share ========
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

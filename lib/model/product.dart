@@ -58,7 +58,6 @@ class Product {
     if (value.isNotEmpty) _deskripsi = value;
   }
 
-  // Format tampilan harga
   String get hargaFormatted {
     final formatter = NumberFormat.currency(
       locale: 'id_ID',
@@ -68,7 +67,7 @@ class Product {
     return formatter.format(_harga);
   }
 
-  // Method tambahan untuk menampilkan info produk
+  // Method untuk menampilkan info produk
   void tampilkanInfo() {
     print("ID: $_id");
     print("Nama Kue: $_nama");
@@ -78,4 +77,34 @@ class Product {
     print("Stok: $_stok");
     print("Deskripsi: $_deskripsi");
   }
+
+  // Convert Product ke Map (untuk disimpan di SharedPreferences)
+  Map<String, dynamic> toMap() {
+    return {
+      'id': _id,
+      'nama': _nama,
+      'harga': _harga,
+      'kategori': _kategori,
+      'gambar': _gambar,
+      'stok': _stok,
+      'deskripsi': _deskripsi,
+    };
+  }
+
+  // Convert Map ke Product (saat load dari SharedPreferences)
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      map['id'] ?? '',
+      map['nama'] ?? '',
+      (map['harga'] as num).toDouble(),
+      map['kategori'] ?? '',
+      map['gambar'] ?? '',
+      map['stok'] ?? 0,
+      map['deskripsi'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() => toMap();
+
+  factory Product.fromJson(Map<String, dynamic> json) => Product.fromMap(json);
 }
